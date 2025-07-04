@@ -14,6 +14,8 @@ app.use(cors({
   origin: 'https://finance-tracker-ui-ten.vercel.app',
   credentials: true,
 }));
+
+app.set('trust proxy', 1);
 app.use('/auth', authRoutes);
 app.use('/api', bugetRoutes);
 app.use('/api', expenseRoute);
