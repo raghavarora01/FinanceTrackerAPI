@@ -1,8 +1,7 @@
 import Expense from "../models/expense.js";
 import Budget from "../models/budget.js";
-import { syncSummaryToPostgres } from "./reportController.js"; // 🔄 Sync to SQL
+import { syncSummaryToPostgres } from "./reportController.js"; 
 
-// 🔹 Add a new expense
 const addDetails = async (req, res) => {
   try {
     const { Amount, Category, Date: dateInput, Payment_Method, Notes } = req.body;
@@ -25,10 +24,10 @@ const addDetails = async (req, res) => {
       userId: req.user.id,
     });
 
-    // 🗓️ Extract YYYY-MM for matching budget
+  
     const currentMonth = parsedDate.toISOString().slice(0, 7);
 
-    // 🔍 Find matching budget document
+    
     const budget = await Budget.findOne({
       userId: req.user.id,
       category: Category,
@@ -69,7 +68,7 @@ const addDetails = async (req, res) => {
       }
     }
 
-    // 🔄 Sync to SQL
+
     await syncSummaryToPostgres(req.user.id);
 
     res.status(201).json({
@@ -88,7 +87,7 @@ const addDetails = async (req, res) => {
   }
 };
 
-// 🔹 Get all expenses
+
 const getDetails = async (req, res) => {
   try {
     const expenses = await Expense.find({ userId: req.user.id });
@@ -98,7 +97,7 @@ const getDetails = async (req, res) => {
   }
 };
 
-// 🔹 Update expense
+
 const updateExpense = async (req, res) => {
   try {
     const { id } = req.params;
@@ -121,7 +120,7 @@ const updateExpense = async (req, res) => {
   }
 };
 
-// 🔹 Delete expense
+
 const deleteExpense = async (req, res) => {
   try {
     const { id } = req.params;
@@ -131,7 +130,6 @@ const deleteExpense = async (req, res) => {
       return res.status(404).json({ message: 'Expense not found or unauthorized' });
     }
 
-    // 🔄 Sync to SQL
     await syncSummaryToPostgres(req.user.id);
 
     res.status(200).json({ message: 'Expense deleted successfully' });
