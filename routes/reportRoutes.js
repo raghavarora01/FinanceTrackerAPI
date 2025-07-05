@@ -7,10 +7,8 @@ import {
 
 const app = express.Router();
 
-// 📊 Get current month's dashboard report
 app.get('/current', protect, getCurrentReport);
 
-// 📅 Get past 3 months' summary reports
 app.get('/history', protect, getPastReports);
 
 export default app;
