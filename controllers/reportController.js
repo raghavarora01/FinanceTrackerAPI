@@ -1,4 +1,3 @@
-// File: controllers/reportController.js
 import { Pool } from 'pg';
 import mongoose from 'mongoose';
 import Expense from '../models/expense.js';
@@ -7,13 +6,11 @@ const pool = new Pool({
   connectionString: process.env.POSTGRES_URL,
 });
 
-// 🔄 Sync summary to PostgreSQL
 export const syncSummaryToPostgres = async (userId) => {
   try {
     const now = new Date();
     const currentMonth = now.toISOString().slice(0, 7);
 
-    // Get current month's expenses from MongoDB
     const start = new Date(`${currentMonth}-01T00:00:00Z`);
     const end = new Date(`${currentMonth}-31T23:59:59Z`);
 
@@ -24,7 +21,6 @@ export const syncSummaryToPostgres = async (userId) => {
 
     const totalSpent = expenses.reduce((acc, e) => acc + e.Amount, 0);
 
-    // Category totals
     const categoryMap = {};
     const paymentMap = {};
     for (let exp of expenses) {
@@ -38,9 +34,8 @@ export const syncSummaryToPostgres = async (userId) => {
       .slice(0, 3)
       .map(([method]) => method);
 
-    const overbudgetCategories = []; // Fill using budget logic if needed
+    const overbudgetCategories = [];
 
-    // UPSERT into PostgreSQL
     await pool.query(
       `INSERT INTO monthly_reports (user_id, month, total_spent, top_category, top_payment_methods, overbudget_categories)
        VALUES ($1, $2, $3, $4, $5, $6)
@@ -60,7 +55,6 @@ export const syncSummaryToPostgres = async (userId) => {
   }
 };
 
-// 📊 Get current month's report
 export const getCurrentReport = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -77,7 +71,6 @@ export const getCurrentReport = async (req, res) => {
   }
 };
 
-// 📅 Get past 3 months' reports
 export const getPastReports = async (req, res) => {
   try {
     const userId = req.user.id;
