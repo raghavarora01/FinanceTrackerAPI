@@ -24,7 +24,7 @@ const ExpenseSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true, // 👈 important for multi-user system
+    required: true,
   },
 });
 
